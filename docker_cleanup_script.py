@@ -60,7 +60,7 @@ def docker_stop_docker_processes(docker_process_name):
     print("\tNumber of containers failed to stop: " + \
           str(len(containers_stopped_failure)))
     print("\tList of containers failed to stop: " + \
-          str(containers_stopped_successfully))
+          str(containers_stopped_failure))
 
 
 def docker_remove_docker_processes(docker_process_name):
