@@ -10,11 +10,13 @@ from time import sleep
 
 
 def docker_stop_docker_processes(docker_process_name):
+
     """
     This function stops the docker container named 'docker_process_name'
     if 'docker_process_name' is not None. Otherwise this function attempts
     to stop all running docker containers.
     """
+
     if docker_process_name is not None:
         cmd_string = 'docker stop %s > /dev/null' \
                      % (docker_process_name)
@@ -22,7 +24,7 @@ def docker_stop_docker_processes(docker_process_name):
         val = os.system(cmd_string)
 
         if val is 0:
-            print("Successfully stopped adocker instance %s" \
+            print("Successfully stopped a docker instance %s" \
                   % docker_process_name)
         else:
             print("Couldn't stop docker instance %s" \
@@ -64,12 +66,14 @@ def docker_stop_docker_processes(docker_process_name):
 
 
 def docker_remove_docker_processes(docker_process_name):
+
     """
     This function removes the inactive docker container named
     'docker_process_name' if 'docker_process_name' is not None.
     Otherwise this function attempts to remove all inactive docker
     containers.
     """
+
     if docker_process_name is not None:
         cmd_string = 'docker rm %s > /dev/null' \
                      % (docker_process_name)
@@ -126,6 +130,7 @@ def docker_cleanup_remove_docker_processes(docker_process_name):
     This function stops and removes the active docker container named
     'docker_process_name'
     """
+
     print "\nCleaning up all docker containers"
 
     docker_stop_docker_processes(docker_process_name)
@@ -133,11 +138,13 @@ def docker_cleanup_remove_docker_processes(docker_process_name):
 
 
 def docker_cleanup_remove_docker_image(docker_image_name):
+
     """
     This function removes the docker image named 'docker_image_name'
     if 'docker_image_name' is not None. Otherwise this function attempts
     to remove all docker images on the machine.
     """
+
     if docker_image_name is not None:
 
         cmd_string = 'docker rmi %s > /dev/null' % (docker_image_name)
@@ -186,11 +193,26 @@ def docker_cleanup_remove_docker_image(docker_image_name):
           str(images_removed_failure))
 
 
+def ovsdb_perf_tool_print_tool_usage():
+    """
+    This function prints the usage CLI of the docker cleanup tool
+    """
+    print("Usage:  python docker_cleanup_script.py" + \
+          " <option:all|images|processes>")
+
+
 if __name__ == '__main__':
 
     now = datetime.datetime.now()
 
-    print("Executing the docker cleanup script at " + str(now))
-
-    docker_cleanup_remove_docker_processes(None)
-    docker_cleanup_remove_docker_image(None)
+    if len(sys.argv) < 2:
+        ovsdb_perf_tool_print_tool_usage()
+    else:
+        print("Executing the docker cleanup script at " + str(now))
+        if sys.argv[1] == "processes":
+            docker_cleanup_remove_docker_processes(None)
+        elif sys.argv[1] == "images":
+            docker_cleanup_remove_docker_image(None)
+        elif sys.argv[1] == "all":
+            docker_cleanup_remove_docker_processes(None)
+            docker_cleanup_remove_docker_image(None)
